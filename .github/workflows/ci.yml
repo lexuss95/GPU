@@ -1,0 +1,18 @@
+# Regression: every push and pull request must pass `make check`.
+name: check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install tools
+        run: tools/install.sh
+      - name: Tool versions
+        run: make check-tools
+      - name: Regression
+        run: make check

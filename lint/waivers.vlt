@@ -1,0 +1,8 @@
+`verilator_config
+// Lint waivers for Verilator. Every waiver must say why it is acceptable.
+// Signals named unused_* are already ignored by the -Wall UNUSED check.
+
+// gpu_pkg is a library of constants for the whole design; any one module uses
+// only some of them, so "parameter not used" there is expected.
+lint_off -rule UNUSEDPARAM -file "*/rtl/gpu_pkg.sv"
+lint_off -rule UNUSEDPARAM -file "rtl/gpu_pkg.sv"

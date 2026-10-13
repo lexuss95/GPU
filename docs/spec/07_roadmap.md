@@ -6,12 +6,12 @@ Complexity is added only when the design needs it.
 | # | Iteration | Output | Flow steps exercised |
 |---|---|---|---|
 | 1 | **Specification v0.1** ✔ | `docs/spec/` (this document set) | — |
-| 2 | Repo skeleton + tools | Directory layout, Makefile, Verilator/Verible/slang/Yosys/OpenSTA installed, `gpu_pkg.sv` with all parameters | compile, lint |
+| 2 | **Repo skeleton + tools** ✔ | Directory layout, Makefile, Verilator/Icarus/Verible/slang/Yosys installed, `gpu_pkg.sv` with all parameters, smoke test, CI | compile, elab, lint, generic synth |
 | 3 | Reference model + assembler | Python assembler and ISA model; example kernels assemble and run on the model | — |
 | 4 | Single-lane core | Shader core RTL with 1 lane, 1 SIMD-group: fetch, decode, ALU, register file, load/store | compile, elab, lint, simple sim |
 | 5 | Full v0.1 core | 8 lanes, 4 SIMD-groups, scheduler, mask stack, threadgroup memory, barrier, CSR, dispatcher | lint, RDC-lite |
 | 6 | UVM testbench | Env, agents, scoreboard, tests T1–T16, coverage | simulation, coverage |
-| 7 | Synthesis + STA | Yosys on sky130, SDC, timing closed at 50 MHz | synthesis, STA |
+| 7 | Synthesis + STA | Install OpenSTA + sky130 PDK; Yosys on sky130, SDC, timing closed at 50 MHz | synthesis, STA |
 
 ## After v0.1 (each one only when we decide we need it)
 

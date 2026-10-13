@@ -1,0 +1,10 @@
+# Generic synthesis check (no technology library yet; sky130 comes in iteration 7).
+# Catches non-synthesizable code and inferred latches early.
+# Run via `make synth-check`, which first reads the RTL with read_slang
+# (the slang SystemVerilog front end built into Yosys 0.70).
+hierarchy -check -top gpu_top
+synth -top gpu_top
+stat
+# Fails on combinational loops (this is how an always_comb latch shows up
+# after read_slang), multiple drivers and undriven signals.
+check -assert

@@ -60,6 +60,31 @@ the plan is a rule-based script on the Yosys netlist (find flops whose data
 comes from another clock domain and check they go through an approved
 synchronizer cell) plus a written UPF file reviewed by hand.
 
+## Toolchain (pinned)
+
+Installed by `tools/install.sh` (Ubuntu 24.04); `make check-tools` prints the versions.
+
+| Tool | Version | Source | `make` target |
+|---|---|---|---|
+| Verilator | 5.020 | apt | `compile`, `lint`, `sim` |
+| Icarus Verilog | 12.0 | apt | `compile` (second opinion) |
+| slang (pyslang) | 12.0.0 | PyPI | `elab` |
+| Verible | 0.0.4071.0 | PyPI | `lint`, `format-check` |
+| Yosys (YoWASP build, with the `read_slang` SV front end) | 0.70 | PyPI | `synth-check` |
+| pytest | 8.3.5 | PyPI | reference model tests (iteration 3) |
+| OpenSTA + sky130 PDK | — | installed in iteration 7 | `syn`, `sta` (later) |
+
+`make check` runs compile → elab → lint → format-check → synth-check → sim and
+is what CI (`.github/workflows/ci.yml`) runs on every push.
+
+Notes:
+- Ubuntu's own Yosys 0.33 cannot parse `import pkg::*;`, so we use the YoWASP
+  Yosys 0.70 build, which reads RTL through slang (`read_slang`). It runs as
+  WebAssembly: single-threaded (`-j 1`) and only sees files under the repo.
+- Until sky130 is installed, `synth-check` maps to Yosys' generic gates. It
+  fails on inferred latches (they show up as combinational loops after
+  `read_slang`), multiple drivers and undriven signals.
+
 ## Initial SDC (constraints for STA)
 
 ```tcl
@@ -84,19 +109,21 @@ set_false_path -from [get_ports rst_n]   ;# async input, goes through the reset 
 | Use `typedef enum logic` for FSM states and opcodes | Readable waveforms, lint checks |
 | No `initial` blocks, no `#` delays in RTL | Not synthesizable |
 
-## Planned repository layout
+## Repository layout
 
 ```
-rtl/          SystemVerilog design (gpu_pkg.sv, gpu_top.sv, ...)
-tb/           UVM testbench
-model/        Python ISA reference model + assembler
+rtl/          SystemVerilog design; files.f lists the files in compile order
+tb/smoke/     Smoke test (checks the flow end to end)
+tb/uvm/       UVM testbench (iteration 6)
+model/        Python ISA reference model + assembler (iteration 3)
 kernels/      Example kernels in assembly
-syn/          Yosys scripts, SDC, STA scripts
+lint/         Verilator waivers, Verible lint rules and format settings
+syn/          Yosys scripts (SDC and STA scripts in iteration 7)
+tools/        install.sh, check_tools.sh, elab.py
 docs/spec/    This specification
-Makefile      make lint | make sim | make syn | make sta
+Makefile      make help | check | compile | elab | lint | format | synth-check | sim
 ```
 
 ## Open questions
 
-- Which slang/Verilator versions to pin; decided when the toolchain is set up
-  (iteration 2).
+- None for now. (Tool versions were pinned in iteration 2, see above.)

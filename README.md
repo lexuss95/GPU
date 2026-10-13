@@ -10,12 +10,33 @@ compile, elaboration, lint, CDC/RDC, simulation with a UVM testbench,
 synthesis and static timing analysis, and UPF power intent when the design
 needs it.
 
+## Quick start (Ubuntu 24.04)
+
+```sh
+tools/install.sh     # apt: verilator, iverilog; .venv: verible, pyslang, yosys, pytest
+make check-tools     # print tool versions
+make check           # compile, elab, lint, format-check, synth-check, smoke sim
+make help            # all targets
+```
+
+## Layout
+
+| Directory | Content |
+|---|---|
+| `rtl/` | SystemVerilog design (`gpu_pkg.sv` holds every spec parameter) |
+| `tb/` | Smoke test now, UVM testbench later |
+| `model/`, `kernels/` | Python reference model, assembler, example kernels (next) |
+| `lint/`, `syn/` | Lint rules and waivers, Yosys scripts |
+| `tools/` | Install and helper scripts |
+| `docs/spec/` | Specification |
+
 ## Status
 
 | Iteration | State |
 |---|---|
 | 1. Specification v0.1 | Done: [docs/spec](docs/spec/00_overview.md) |
-| 2. Repo skeleton + tools | Next |
+| 2. Repo skeleton + tools | Done: `make check` passes, CI runs it on every push |
+| 3. Reference model + assembler | Next |
 
 See the [roadmap](docs/spec/07_roadmap.md).
 

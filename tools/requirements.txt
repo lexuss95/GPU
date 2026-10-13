@@ -1,0 +1,5 @@
+# Python tools for MiniTile. Versions are pinned so every machine gets the same results.
+verible==0.0.4071.0   # Verible lint + formatter binaries (style lint, format check)
+pyslang==12.0.0       # slang SystemVerilog front end (strict elaboration)
+yowasp-yosys==0.70.0.0.post1259  # Yosys 0.70 with the slang SV front end (read_slang)
+pytest==8.3.5         # tests for the Python reference model (iteration 3)
